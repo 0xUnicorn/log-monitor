@@ -12,24 +12,21 @@ class FtpMonitor:
         with open(self.log_file, 'r') as f:
             while True:
                 line = f.readline()
+                sanitized_line = self._sanitize_line(line)
                 if line:
-                    sanitized_line = self._sanitize_line(line)
                     ftp_login_event = self._create_event(sanitized_line)
                     self.dispatcher.dispatch('ftp.login', ftp_login_event)
 
-    def _sanitize_line(self, line: list) -> dict:
+    def _sanitize_line(self, line: str) -> dict:
         splitted_line = line.split(' ')
-        if "USER" in line:
-            username = splitted_line[-1]
-        if "530" in line:
-            status = "FAILED"
-        return {
-            "message": line.split(',')[1],
-            "ip": line.split(',')[0].split(' ')[-1],
-            "date": f"{splitted_line[2]}/{splitted_line[1]}/{splitted_line[4]}-{splitted_line[3]}",
-            "username": username,
-            "status": status
-        }
+        if "530" in splitted_line:
+            return {
+                "message": line.split(',')[1],
+                "ip": line.split(',')[0].split(' ')[-1],
+                "date": f"{splitted_line[2]}/{splitted_line[1]}/{splitted_line[4]}-{splitted_line[3]}",
+                "username": username,
+                "status": status
+            }
 
     def _create_event(self, line: dict) -> FtpLoginEvent:
         return FtpLoginEvent(
