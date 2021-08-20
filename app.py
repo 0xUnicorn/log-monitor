@@ -13,7 +13,7 @@ def main():
     dispatcher = EventDispatcher()
     dispatcher.add_listener('ftp.login', sender.send)
 
-    ftp_monitor = FtpMonitor(dispatcher)
+    ftp_monitor = FtpMonitor(dispatcher, "/var/log/ftp/vsftpd.log")
     ftp_monitor.fetch()
 
 if __name__ == "__main__":

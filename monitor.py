@@ -4,10 +4,9 @@ from event import FtpLoginEvent
 
 class FtpMonitor:
     
-    def __init__(self, dispatcher) -> None:
+    def __init__(self, dispatcher, log_file: str) -> None:
         self.dispatcher = dispatcher
-
-    log_file = "/var/log/vsftpd.log"
+        self.log_file = log_file
 
     def fetch(self):
         with open(self.log_file, 'r') as f:
