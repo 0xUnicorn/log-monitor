@@ -1,8 +1,11 @@
 from datetime import datetime
-from schema import FtpLoginSchema
+from event import FtpLoginEvent
 
 
-class FtpMonitor:      
+class FtpMonitor:
+    
+    def __init__(self, dispatcher) -> None:
+        self.dispatcher = dispatcher
 
     log_file = "/var/log/vsftpd.log"
 
@@ -11,11 +14,11 @@ class FtpMonitor:
             while True:
                 line = f.readline()
                 if 'LOGIN' in line:
-                    schema = self._add_to_schema(line.split())
-                    print(schema)
+                    ftp_login_event = self._create_event(line.split())
+                    self.dispatcher.dispatch('ftp.login', ftp_login_event)
 
-    def _add_to_schema(self, line: list) -> FtpLoginSchema:
-        return FtpLoginSchema(
+    def _create_event(self, line: list) -> FtpLoginEvent:
+        return FtpLoginEvent(
             date=self._convert_date([line[2], line[1], line[4], line[3]]),
             username=line[7].strip('[]'),
             ip=self._get_ip(line[11]),

@@ -1,18 +1,24 @@
+from sender import Sender
 from monitor import FtpMonitor
 from connector import Connector
+
+
 from multiprocessing import Process
+from whistle import EventDispatcher
 
 
 def main():
 
     connector = Connector("IP-ADDRESS")
 
-    monitor = FtpMonitor()
+    sender = Sender(connector)
 
-    
+    dispatcher = EventDispatcher()
 
-    p = Process(target=monitor.fetch)
-    p.start()
-    p.join()
+    dispatcher.add_listener('ftp.login', sender.send)
+
+    monitor = FtpMonitor(dispatcher)
+
+    monitor.fetch()
 
 main()
