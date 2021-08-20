@@ -13,7 +13,7 @@ class FtpMonitor:
             while True:
                 line = f.readline()
                 sanitized_line = self._sanitize_line(line)
-                if line:
+                if sanitized_line:
                     ftp_login_event = self._create_event(sanitized_line)
                     self.dispatcher.dispatch('ftp.login', ftp_login_event)
 
