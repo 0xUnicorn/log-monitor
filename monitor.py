@@ -20,11 +20,12 @@ class FtpMonitor:
     def _sanitize_line(self, line: str) -> dict:
         splitted_line = line.split(' ')
         if "530" in splitted_line:
+            if "Login incorrect" in splitted_line:
+                status = "FAILED"
             return {
                 "message": line.split(',')[1],
                 "ip": line.split(',')[0].split(' ')[-1],
                 "date": f"{splitted_line[2]}/{splitted_line[1]}/{splitted_line[4]}-{splitted_line[3]}",
-                "username": username,
                 "status": status
             }
 
