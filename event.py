@@ -14,7 +14,7 @@ class FtpLoginEvent(Event):
 
     def as_http_body(self):
         return {
-            "date": self.date,
+            "date": self.date.isoformat(),
             "username": self.username,
             "ip": self.ip,
             "status": self.status
