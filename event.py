@@ -8,14 +8,12 @@ from whistle import Event
 class FtpLoginEvent(Event):
 
     date: datetime
-    username: str
     ip: str
     status: str
 
     def as_http_body(self):
         return {
             "date": self.date.isoformat(),
-            "username": self.username,
             "ip": self.ip,
             "status": self.status
         }

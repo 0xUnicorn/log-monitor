@@ -19,20 +19,26 @@ class FtpMonitor:
 
     def _sanitize_line(self, line: str) -> dict:
         splitted_line = line.split(' ')
-        if "530" in splitted_line:
-            if "Login incorrect" in splitted_line:
-                status = "FAILED"
-            return {
-                "message": line.split(',')[1],
-                "ip": line.split(',')[0].split(' ')[-1],
-                "date": f"{splitted_line[2]}/{splitted_line[1]}/{splitted_line[4]}-{splitted_line[3]}",
-                "status": status
-            }
+        if '"530' in splitted_line:
+            if "Login" in splitted_line:
+                status = "FAIL"
+            else:
+                return
+        elif '"220' in splitted_line:
+            status = "NEW"
+        elif '"230' in splitted_line:
+            status = "OK"
+        else:
+            return
+        return {
+            "ip": line.split(',')[0].split(' ')[-1].strip('"'),
+            "date": f"{splitted_line[2]}/{splitted_line[1]}/{splitted_line[4]}-{splitted_line[3]}",
+            "status": status
+        }
 
     def _create_event(self, line: dict) -> FtpLoginEvent:
         return FtpLoginEvent(
             date=self._convert_date(line['date']),
-            username=line['username'],
             ip=line['ip'],
             status=line['status']
         )
