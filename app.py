@@ -1,3 +1,5 @@
+from multiprocessing import Process
+
 from sender import Sender
 from monitor import EndlesshMonitor, FtpMonitor
 from connector import Connector
@@ -18,11 +20,16 @@ def main():
 
     # ftp_monitor = FtpMonitor(dispatcher, "./ftp_logfile.log")
     ftp_monitor = FtpMonitor(dispatcher, "/var/log/ftp/vsftpd.log")
-    ftp_monitor.fetch()
+    p_ftp = Process(target=ftp_monitor.fetch)
 
     # endlessh_monitor = EndlesshMonitor(dispatcher, "./endlessh_logfile.log")
     endlessh_monitor = EndlesshMonitor(dispatcher, "/var/log/endlessh/current")
-    endlessh_monitor.fetch()
+    p_ssh = Process(target=endlessh_monitor.fetch)
+    
+    p_ftp.start()
+    p_ssh.start()
+    p_ftp.join()
+    p_ssh.join()
 
 if __name__ == "__main__":
     main()

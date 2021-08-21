@@ -15,6 +15,7 @@ class FtpMonitor:
                 sanitized_line = self._sanitize_line(line)
                 if sanitized_line:
                     ftp_login_event = self._create_event(sanitized_line)
+                    # print(ftp_login_event)
                     self.dispatcher.dispatch('ftp.login', ftp_login_event)
 
     def _sanitize_line(self, line: str) -> dict:
@@ -59,7 +60,7 @@ class EndlesshMonitor:
                 line = f.readline()
                 if "CLOSE" in line:
                     endlessh_login_event = self._create_event(line)
-                    print(endlessh_login_event)
+                    # print(endlessh_login_event)
                     self.dispatcher.dispatch('endlessh.login', endlessh_login_event)
 
     def _create_event(self, line:str):
