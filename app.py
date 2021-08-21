@@ -16,10 +16,12 @@ def main():
     dispatcher.add_listener('ftp.login', ftp_sender.send)
     dispatcher.add_listener('endlessh.login', endlessh_sender.send)
 
-    ftp_monitor = FtpMonitor(dispatcher, "./ftp_logfile.log")
+    # ftp_monitor = FtpMonitor(dispatcher, "./ftp_logfile.log")
+    ftp_monitor = FtpMonitor(dispatcher, "/var/log/ftp/vsftpd.log")
     ftp_monitor.fetch()
 
-    endlessh_monitor = EndlesshMonitor(dispatcher, "./endlessh_logfile.log")
+    # endlessh_monitor = EndlesshMonitor(dispatcher, "./endlessh_logfile.log")
+    endlessh_monitor = EndlesshMonitor(dispatcher, "/var/log/endlessh/current")
     endlessh_monitor.fetch()
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ class Sender:
         self.endpoint = endpoint
 
     def send(self, event):
-        print(f"Sending event: {event.as_http_body()}")
+        print(f"Sending event: {event}")
 
         response = self.connector.connect_to_api(
             endpoint=self.endpoint,

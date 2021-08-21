@@ -11,6 +11,9 @@ class FtpLoginEvent(Event):
     ip: str
     status: str
 
+    def __repr__(self) -> str:
+        return f"FTP Login - Date: {self.date} | IP: {self.ip} | Status: {self.status}"
+
     def as_http_body(self):
         return {
             "date": self.date.isoformat(),
@@ -25,6 +28,9 @@ class EndlesshLoginEvent(Event):
     ip: str
     time: float
     bytes_sent: int
+
+    def __repr__(self) -> str:
+        return f"Endlessh Login - Date: {self.date} | IP: {self.ip} | Time: {self.time} | Bytes: {self.bytes_sent}"
 
     def as_http_body(self):
         return {
