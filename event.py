@@ -17,3 +17,19 @@ class FtpLoginEvent(Event):
             "ip": self.ip,
             "status": self.status
         }
+
+@dataclass
+class EndlesshLoginEvent(Event):
+
+    date: str
+    ip: str
+    time: float
+    bytes_sent: int
+
+    def as_http_body(self):
+        return {
+            "date": self.date,
+            "ip": self.ip,
+            "time_wasted": self.time,
+            "bytes_sent": self.bytes_sent
+        }

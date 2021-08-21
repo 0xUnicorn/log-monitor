@@ -1,5 +1,5 @@
 from datetime import datetime
-from event import FtpLoginEvent
+from event import EndlesshLoginEvent, FtpLoginEvent
 
 
 class FtpMonitor:
@@ -45,3 +45,28 @@ class FtpMonitor:
 
     def _convert_date(self, full_date: list) -> datetime:
         return datetime.strptime(full_date, '%d/%b/%Y-%H:%M:%S')
+
+
+class EndlesshMonitor:
+    
+    def __init__(self, dispatcher, log_file: str) -> None:
+        self.dispatcher = dispatcher
+        self.log_file = log_file
+
+    def fetch(self):
+        with open(self.log_file, 'r') as f:
+            while True:
+                line = f.readline()
+                if "CLOSE" in line:
+                    endlessh_login_event = self._create_event(line)
+                    print(endlessh_login_event)
+                    self.dispatcher.dispatch('endlessh.login', endlessh_login_event)
+
+    def _create_event(self, line:str):
+        splitted_line = line.split(' ')
+        return EndlesshLoginEvent(
+            date=splitted_line[3],
+            ip=splitted_line[5].split(':')[-1],
+            time=splitted_line[8].split('=')[1],
+            bytes_sent=splitted_line[-1].split('=')[1].strip('\n')
+        )
